@@ -12,3 +12,10 @@ int main(void) {
     fclose(file);
     // NOTE : fgets also works with files, as the f implies. It will continue until a \n is met. Most likely very useful for text files
 }
+// exemple de fonctions de bases pour lire un fichier image contenant deux short int représentant les dimensions, suivis de <dimensions> triplets de char représentant les valeurs RGB des pixels
+short int dimensions[2];
+if (fread(dimensions, sizeof(short), 2, file) != 2) {
+    printf("CRASH : READ ERROR");
+}
+char * pixels_value = malloc(dimensions[0]*dimensions[1]*3*sizeof(char));
+fread(pixels_value, sizeof(char), dimensions[0]*dimensions[1]*3, file);

@@ -15,12 +15,12 @@ int main(int argc, char ** argv) {
     char line[1000] = "";
     int n_line = 0, stop_while = 1;
     FILE * file, * dup;
-    if (argc != 2) {
+    if (argc != 2) {                                // si on a moins ou plus d'un argument (argv contient minimum 1 valeur) alors on exit
         printf("USAGE : ./dupicata file_to_duplicate\n");
         exit(1);
     }
-    file = fopen(argv[1], "r");
-    if (file == NULL) {
+    file = fopen(argv[1], "r");                     // on ouvre le fichier source (passé en argument) en mode lecture
+    if (file == NULL) {                             // si ce fichier n'existe pas, alors file vaut NULL, auquel cas on exit
         printf("FILE DOES NOT EXIST.\n");
         fclose(file);
         exit(1);

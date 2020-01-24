@@ -52,4 +52,5 @@ size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream);
 /* The  function  fread() reads nmemb items of data, each size bytes long,
     from the stream pointed to by stream,  storing  them  at  the  location
     given by ptr.
+	NOTE : utiliser <instruction>, <instruction> etc dans des while ou des if, SEULE la dernière instruction sert de base pour la comparaison/test (opérateur séquentiel)
 */
