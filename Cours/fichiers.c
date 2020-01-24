@@ -19,3 +19,5 @@ if (fread(dimensions, sizeof(short), 2, file) != 2) {
 }
 char * pixels_value = malloc(dimensions[0]*dimensions[1]*3*sizeof(char));
 fread(pixels_value, sizeof(char), dimensions[0]*dimensions[1]*3, file);
+
+// supression dans un fichier en C : soit copie modif réécriture soit truncate/ftruncate. preferably truncate
