@@ -15,24 +15,44 @@ void count_tab(char *);
 void create_tab(char *);
 void append_tab(char *);
 void edit_tab_at_i(char *, int32_t);
+void delete_name_at_i(char *, int32_t);
+/*
+concept : on malloc la taille du fichier - 25 bytes.
+on stocke en mémoire le fichier entier jusqu'au ième nom.
+on seek 25 bytes en avant
+on copie tout le reste du fichier dans la mémoire
+on ferme le fichier
+on l'ouvre en wt et on écrit le contenu de la mémoire.
+*/
+void delete_name_at_i(char * path, int32_t i) {
+    FILE * file = fopen(path, "rt");
+    if (file == NULL) {
+        printf("COULD NOT OPEN FILE !\n");
+        exit(EXIT_FAILURE);
+    }
+    int32_t k = 0;
+    for (k = 0; k<i-1; i++) {
+
+    }
+}
 
 void edit_tab_at_i(char * path, int32_t n) {
-    FILE * file = fopen(path, "r+t");
+    FILE * file = fopen(path, "r+t");   // opening file in read/write textual mode, because we need to edit the file.
     if (file == NULL) {
         printf("COULD NOT OPEN FILE !\n");
         exit(EXIT_FAILURE);
     }
     char student[25];
     printf("Enter the name to use as substitute :\n");
-    bzero(student, 25);
-    fgets(student, 25, stdin);
-    fseek(file, (n-1)*25, SEEK_SET);
-    fwrite(student, sizeof(char), 25, file);
-    
+    bzero(student, 25); // nulling the string student to make sure we dont copy random stuff
+    fgets(student, 25, stdin); // capturing stdin and stocking it in student
+    fseek(file, (n-1)*25, SEEK_SET); // going to the nth cell, at the n-1 position.
+    fwrite(student, sizeof(char), 25, file); // writing 25 bytes of data to the file.
+    fclose(file);
 }
 
 void append_tab(char * path) {
-    FILE * file = fopen(path, "a");
+    FILE * file = fopen(path, "at"); // opening file in append textual mode
     if (file == NULL) {
         printf("COULD NOT APPEND TO FILE !\n");
         exit(EXIT_FAILURE);
@@ -40,12 +60,14 @@ void append_tab(char * path) {
     char student[25];
     printf("Enter the name to append :\n");
     fgets(student, 25, stdin);
-    if (fwrite(student, sizeof(char), 25, file) != 25) {
-        printf("ERROR : COULD NOT WRITE TO FILE !\n");
+    if (fwrite(student, sizeof(char), 25, file) != 25) { // if we write less than 25 bytes,
+        printf("ERROR : COULD NOT WRITE TO FILE !\n");   // then the writing failed and we raise
+        fclose(file); // an error
         exit(EXIT_FAILURE);
     }
     else {
         printf("ADDED NAME %s TO FILE \"%s\"\n", student, path);
+        fclose(file);
     }
 }
 
@@ -65,6 +87,7 @@ void create_tab(char * path) {
             fwrite(student, sizeof(char), 25, file);
         }
     }
+    fclose(file);
 }
 
 void print_tab(char * path) {
@@ -79,10 +102,12 @@ void print_tab(char * path) {
         printf("%s", student);
     }
     if (feof(file)) {
+        fclose(file);
         exit(EXIT_SUCCESS);
     }
     else {
         printf("ERROR : could not read file\n");
+        fclose(file);
         exit(EXIT_SUCCESS);
     }
 }
@@ -100,10 +125,12 @@ void count_tab(char * path) {
             }
             if (feof(file)) {
                 printf("There is %d names in file \"%s\"\n", count, path);
+                fclose(file);
                 exit(EXIT_SUCCESS);
             }
             else {
                 printf("ERROR : could not read file\n");
+                fclose(file);
                 exit(EXIT_SUCCESS);
             }
 }
@@ -116,7 +143,7 @@ int32_t main(int32_t argc, char ** argv) {
         "-a to add a name\n"            // done
         "-p to print all names\n"       // done
         "-c to print number of names\n" // done
-        "-m i to modify the i-th name\n"// 
+        "-m i to modify the i-th name\n"// done
         "-i i to delete the i-th name\n"// 
         "-n to delete name n\n");       //
         exit(EXIT_FAILURE);
@@ -152,7 +179,7 @@ int32_t main(int32_t argc, char ** argv) {
                 printf("NAMES ARE INDEXED STARTING AT 1, PLEASE ENTER AN INTEGER > 0 !\n");
                 exit(EXIT_FAILURE);
             }
-
+            edit_tab_at_i(argv[1], number);
             break;
         
         case 'i':
@@ -162,5 +189,16 @@ int32_t main(int32_t argc, char ** argv) {
         case 'n':
             printf("NOT YET IMPLEMENTED. SORRY!\n");
             break;
+
+        default:
+            printf("ERROR : usage ./Exo2 file -flag\n"
+            "YOU MUST USE A FLAG :\n"
+            "-0 for creation\n"             // done
+            "-a to add a name\n"            // done
+            "-p to print all names\n"       // done
+            "-c to print number of names\n" // done
+            "-m i to modify the i-th name\n"// done
+            "-i i to delete the i-th name\n"// 
+            "-n to delete name n\n");       //
     }
 }
